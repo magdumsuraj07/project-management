@@ -67,7 +67,7 @@ class ProjectRegistrationForm(forms.ModelForm):
     assign = forms.ModelMultipleChoiceField(queryset=User.objects.all())
     efforts = forms.DurationField()
     status = forms.ChoiceField(choices=status)
-    dead_line = forms.DateField()
+    dead_line = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     company = forms.ModelChoiceField(queryset=Company.objects.all())
     complete_per = forms.FloatField(min_value=0, max_value=100)
     description = forms.CharField(widget=forms.Textarea)

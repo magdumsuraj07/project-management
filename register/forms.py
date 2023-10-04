@@ -63,7 +63,7 @@ class CompanyRegistrationForm(forms.Form):
     name = forms.CharField(max_length=80)
     email = forms.EmailField()
     city = forms.CharField(max_length=50)
-    found_date = forms.DateField()
+    found_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
 
     class Meta:
         model = Comp

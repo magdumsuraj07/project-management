@@ -78,24 +78,24 @@ class ProjectRegistrationForm(forms.ModelForm):
 
 
     def save(self, commit=True):
-        Project = super(ProjectRegistrationForm, self).save(commit=False)
-        Project.name = self.cleaned_data['name']
-        Project.efforts = self.cleaned_data['efforts']
-        Project.status = self.cleaned_data['status']
-        Project.dead_line = self.cleaned_data['dead_line']
-        Project.company = self.cleaned_data['company']
-        Project.complete_per = self.cleaned_data['complete_per']
-        Project.description = self.cleaned_data['description']
-        Project.slug = slugify(str(self.cleaned_data['name']))
-        Project.save()
+        project = super(ProjectRegistrationForm, self).save(commit=False)
+        project.name = self.cleaned_data['name']
+        project.efforts = self.cleaned_data['efforts']
+        project.status = self.cleaned_data['status']
+        project.dead_line = self.cleaned_data['dead_line']
+        project.company = self.cleaned_data['company']
+        project.complete_per = self.cleaned_data['complete_per']
+        project.description = self.cleaned_data['description']
+        project.slug = slugify(str(self.cleaned_data['name']))
+        project.save()
         assigns = self.cleaned_data['assign']
         for assign in assigns:
-            Project.assign.add((assign))
+            project.assign.add((assign))
 
         if commit:
-            Project.save()
+            project.save()
 
-        return Project
+        return project
 
 
     def __init__(self, *args, **kwargs):

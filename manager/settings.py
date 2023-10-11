@@ -11,20 +11,23 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+import environ
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!%m041&45i+ks6*fmf2$lf69+uarcv5l-25540r^rhe=fm^(yi'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 
 # Application definition
@@ -83,12 +86,15 @@ WSGI_APPLICATION = 'manager.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": env("POSTGRES_HOST"),
+        "PORT": env("POSTGRES_PORT"),
+        "NAME": env("POSTGRES_DB"),
+        "USER": env("POSTGRES_USER"),
+        "PASSWORD": env("POSTGRES_PASSWORD"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -134,42 +140,36 @@ MEDIA_ROOT =  os.path.join(BASE_DIR, 'core/media') # Included upload images
 print(MEDIA_ROOT)
 
 # Heroku configs
-if os.getcwd() == '/app':
-    import dj_database_url
-    DATABASES = {
-        'default': dj_database_url.config(default='postgres://localhost')
-    }
+# if os.getcwd() == '/app':
+#     import dj_database_url
+#     DATABASES = {
+#         'default': dj_database_url.config(default='postgres://localhost')
+#     }
 
-    # Honor header 'x-forwarded-proto' para request.is_secure()
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#     # Honor header 'x-forwarded-proto' para request.is_secure()
+#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-    # Header to allow all hosts
-    ALLOWED_HOSTS = ['*']
+#     # Header to allow all hosts
+#     ALLOWED_HOSTS = ['*']
 
-    # CONFIG FOR STATICFILES
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    STATIC_ROOT = 'staticfiles'
-    STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, 'static'),
-    )
+#     # CONFIG FOR STATICFILES
+#     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+#     STATIC_ROOT = 'staticfiles'
+#     STATICFILES_DIRS = (
+#         os.path.join(BASE_DIR, 'static'),
+#     )
 
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = 'gui-projects'
-    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+#     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+#     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+#     AWS_STORAGE_BUCKET_NAME = 'gui-projects'
+#     AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
-    AWS_S3_OBJECT_PARAMETERS = {
-        'CacheControl': 'max-age=86400',
-    }
+#     AWS_S3_OBJECT_PARAMETERS = {
+#         'CacheControl': 'max-age=86400',
+#     }
 
-    AWS_LOCATION = 'static'
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+#     AWS_LOCATION = 'static'
+#     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#     STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-
-
-
-
-
+#     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
